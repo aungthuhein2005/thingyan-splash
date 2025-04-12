@@ -20,7 +20,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: url('images/splash.png') center center no-repeat;
+    background: center center no-repeat;
     background-size: cover;
     z-index: 9999;
     opacity: 0.8;
@@ -38,7 +38,7 @@
       opacity: 0;
     }
   }
-  
+
   #startOverlay {
     position: fixed;
     top: 0; left: 0;
@@ -66,7 +66,13 @@
   #sendBtn:hover {
     background-color: #005f8e;
   }
-  
+
+  #copyMsg {
+    color: green;
+    font-size: 1.2rem;
+    display: none;
+  }
+
 </style>
 <body>
   <div class="container">
@@ -79,42 +85,56 @@
   </div>
 
   <button id="sendBtn">📨 Send to Friend</button>
-<p id="copyMsg" style="display:none; color:green;">Link copied! Share it now 💚</p>
+  <p id="copyMsg">Link copied! Share it now 💚</p>
 
-  <audio id="splashSound" src="./sounds/splash.mp3" preload="auto" autoplay></audio>
-  <!-- <script src="script.js"></script> -->
-   <script>
+  <audio id="splashSound" src="./sounds/splash.mp3" preload="auto"></audio>
+  
+  <script>
     const splashSound = document.getElementById('splashSound');
-const startOverlay = document.getElementById('startOverlay');
-const sendBtn = document.getElementById('sendBtn');
-const copyMsg = document.getElementById('copyMsg');
-
-sendBtn.addEventListener('click', () => {
-  navigator.clipboard.writeText(window.location.href).then(() => {
-    copyMsg.style.display = 'block';
-    setTimeout(() => {
-      copyMsg.style.display = 'none';
-    }, 2000);
-  });
-});
-
-
-startOverlay.addEventListener('click', () => {
-  splashSound.play();
-  triggerSplash();
-  startOverlay.style.display = 'none';
-});
-
-function triggerSplash() {
-  const splashOverlay = document.createElement('div');
-  splashOverlay.className = 'fullscreen-splash';
-  document.body.appendChild(splashOverlay);
-
-  setTimeout(() => {
-    document.body.removeChild(splashOverlay);
-  }, 600);
-}
-
-   </script>
+    const startOverlay = document.getElementById('startOverlay');
+    const sendBtn = document.getElementById('sendBtn');
+    const copyMsg = document.getElementById('copyMsg');
+  
+    // Preload splash image
+    const splashImage = new Image();
+    splashImage.src = 'images/splash.png';
+  
+    let imageLoaded = false;
+    splashImage.onload = () => {
+      imageLoaded = true;
+    };
+  
+    sendBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        copyMsg.style.display = 'block';
+        setTimeout(() => {
+          copyMsg.style.display = 'none';
+        }, 2000);
+      });
+    });
+  
+    startOverlay.addEventListener('click', () => {
+      if (!imageLoaded) {
+        alert("Please wait… Splash image is still loading 💧");
+        return;
+      }
+  
+      splashSound.play();
+      triggerSplash();
+      startOverlay.style.display = 'none';
+    });
+  
+    function triggerSplash() {
+      const splashOverlay = document.createElement('div');
+      splashOverlay.className = 'fullscreen-splash';
+      splashOverlay.style.backgroundImage = 'url(images/splash.png)';
+      document.body.appendChild(splashOverlay);
+  
+      setTimeout(() => {
+        document.body.removeChild(splashOverlay);
+      }, 600);
+    }
+  </script>
+  
 </body>
 </html>
